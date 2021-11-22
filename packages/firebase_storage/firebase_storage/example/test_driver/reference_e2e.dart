@@ -1,6 +1,3 @@
-// ignore_for_file: require_trailing_commas
-// @dart = 2.9
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -14,7 +11,7 @@ import './test_utils.dart';
 
 void runReferenceTests() {
   group('$Reference', () {
-    /*late*/ FirebaseStorage storage;
+    late FirebaseStorage storage;
 
     setUpAll(() async {
       storage = FirebaseStorage.instance;
@@ -46,7 +43,7 @@ void runReferenceTests() {
 
     group('parent', () {
       test('returns the parent directory as a reference', () async {
-        expect(storage.ref('/foo/uploadNope.jpeg').parent.fullPath, 'foo');
+        expect(storage.ref('/foo/uploadNope.jpeg').parent?.fullPath, 'foo');
       });
 
       test('returns null if already at root', () async {
@@ -99,11 +96,14 @@ void runReferenceTests() {
         Reference ref = storage.ref('/uploadNope.jpeg');
 
         await expectLater(
-            () => ref.delete(),
-            throwsA(isA<FirebaseException>()
+          () => ref.delete(),
+          throwsA(
+            isA<FirebaseException>()
                 .having((e) => e.code, 'code', 'unauthorized')
                 .having((e) => e.message, 'message',
-                    'User is not authorized to perform the desired action.')));
+                    'User is not authorized to perform the desired action.'),
+          ),
+        );
       });
     });
 
@@ -196,8 +196,8 @@ void runReferenceTests() {
               contentLanguage: 'en',
             ));
 
-        expect(complete.metadata.size, kTestString.length);
-        expect(complete.metadata.contentLanguage, 'en');
+        expect(complete.metadata?.size, kTestString.length);
+        expect(complete.metadata?.contentLanguage, 'en');
       });
 
       test('errors if permission denied', () async {
@@ -249,9 +249,9 @@ void runReferenceTests() {
           ),
         );
 
-        expect(complete.metadata.size, kTestString.length);
-        expect(complete.metadata.contentLanguage, 'en');
-        expect(complete.metadata.customMetadata['activity'], 'test');
+        expect(complete.metadata?.size, kTestString.length);
+        expect(complete.metadata?.contentLanguage, 'en');
+        expect(complete.metadata?.customMetadata!['activity'], 'test');
       });
 
       test('errors if permission denied', () async {
@@ -279,11 +279,14 @@ void runReferenceTests() {
         final Reference ref = storage.ref('uploadNope.jpeg');
 
         await expectLater(
-            () => ref.putString('data'),
-            throwsA(isA<FirebaseException>()
+          () => ref.putString('data'),
+          throwsA(
+            isA<FirebaseException>()
                 .having((e) => e.code, 'code', 'unauthorized')
                 .having((e) => e.message, 'message',
-                    'User is not authorized to perform the desired action.')));
+                    'User is not authorized to perform the desired action.'),
+          ),
+        );
       });
     });
 
@@ -292,7 +295,7 @@ void runReferenceTests() {
         Reference ref = storage.ref('flutter-tests').child('flt-ok.txt');
         FullMetadata fullMetadata = await ref
             .updateMetadata(SettableMetadata(customMetadata: {'foo': 'bar'}));
-        expect(fullMetadata.customMetadata['foo'], 'bar');
+        expect(fullMetadata.customMetadata!['foo'], 'bar');
       });
 
       test('errors if property does not exist', () async {
